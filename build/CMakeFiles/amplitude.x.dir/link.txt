@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/amplitude.x.dir/src/glad.c.o CMakeFiles/amplitude.x.dir/src/main.cpp.o  -o amplitude.x  -L/home/local/hyarhyar/projects/amplitude/lib -rdynamic -lglfw -lglfw -ldl -Wl,-rpath,/home/local/hyarhyar/projects/amplitude/lib 

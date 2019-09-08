@@ -2,7 +2,10 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(amplitude)
 
- 
+#Compile flags
+set (CMAKE_CXX_FLAGS "-O2 -g")
+
+
 #Headers
 include_directories(include)
 include_directories(lib)

@@ -1,0 +1,3 @@
+/home/planckcons/Projects/amplitude/CMakeFiles/rebuild_cache.dir
+/home/planckcons/Projects/amplitude/CMakeFiles/amplitude.x.dir
+/home/planckcons/Projects/amplitude/CMakeFiles/edit_cache.dir
