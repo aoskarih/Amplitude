@@ -17,10 +17,12 @@ Shader * fieldShader;
 const unsigned int WIDTH = 1280;
 const unsigned int HEIGHT = 720;
 
-const int GRID_W = 160;
-const int GRID_H = 90;
-const int GRID_BUFFER = 5;
+const int GRID_W = 80;
+const int GRID_H = 45;
+const int GRID_BUFFER = 10;
 int GRID_C = 0;
+
+float game_time = 0.0f;
 
 unsigned int VBO, VAO, EBO;
 
@@ -80,7 +82,9 @@ void update() {
     fieldShader->use();
     glBindVertexArray(VAO);
     
-    glDrawElements(GL_TRIANGLES, GRID_C, GL_UNSIGNED_INT, 0);
+    fieldShader->setFloat("time", game_time);
+
+    glDrawElements(GL_TRIANGLES, GRID_C*3, GL_UNSIGNED_INT, 0);
     //glDrawArrays(GL_TRIANGLES, 0, 3);
 
 }
@@ -104,7 +108,7 @@ int main() {
         for (int i = 0; i < grid_w; i++) {
             vert[(j*grid_w + i) * 3] = 2.0*(((float) GRID_W)/2.0 + 4.0 - (i + 0.5*(j%2))) / (GRID_W);
             vert[(j*grid_w + i) * 3 + 1] = 2.0*(((float) GRID_H)/2.0 + 4.5 - j) / (GRID_H);
-            vert[(j*grid_w + i) * 3 + 2] = ((float) rand()) / (RAND_MAX);
+            vert[(j*grid_w + i) * 3 + 2] = ((float) rand()/2) / (RAND_MAX);
             // printf("%f, %f\n", vert[(j*grid_w + i) * 3], vert[(j*grid_w + i) * 3 + 1]);
         }
     }
@@ -166,6 +170,8 @@ int main() {
 
         // rendering, logic etc.
         update();
+
+        game_time = game_time + 0.1f;
 
         // other
         glfwSwapBuffers(window);

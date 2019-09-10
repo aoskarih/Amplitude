@@ -1,1 +1,4 @@
 lib/libdl.so.2
+CMakeCache.txt
+CMakeFiles/*
+

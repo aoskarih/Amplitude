@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 2.8.9)
 project(amplitude)
 
@@ -19,4 +18,3 @@ file(GLOB SOURCES "src/*.c*")
 add_executable(amplitude.x ${SOURCES})
 
 target_link_libraries(amplitude.x ${PROJECT_LINK_LIBS})
-

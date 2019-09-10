@@ -1,1 +1,1 @@
-/usr/bin/c++  -O2 -g  -rdynamic CMakeFiles/amplitude.x.dir/src/glad.c.o CMakeFiles/amplitude.x.dir/src/main.cpp.o  -o amplitude.x  -L/home/planckcons/Projects/amplitude/lib -Wl,-rpath,/home/planckcons/Projects/amplitude/lib -lglfw -lglfw -ldl 
+/usr/bin/c++   -O2 -g   CMakeFiles/amplitude.x.dir/src/glad.c.o CMakeFiles/amplitude.x.dir/src/main.cpp.o  -o amplitude.x  -L/home/local/hyarhyar/projects/amplitude/lib -rdynamic -lglfw -lglfw -ldl -Wl,-rpath,/home/local/hyarhyar/projects/amplitude/lib 

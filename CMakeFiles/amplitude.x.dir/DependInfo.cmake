@@ -5,7 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/planckcons/Projects/amplitude/src/glad.c" "/home/planckcons/Projects/amplitude/CMakeFiles/amplitude.x.dir/src/glad.c.o"
+  "/home/local/hyarhyar/projects/amplitude/src/glad.c" "/home/local/hyarhyar/projects/amplitude/CMakeFiles/amplitude.x.dir/src/glad.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
@@ -15,7 +15,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "lib"
   )
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/planckcons/Projects/amplitude/src/main.cpp" "/home/planckcons/Projects/amplitude/CMakeFiles/amplitude.x.dir/src/main.cpp.o"
+  "/home/local/hyarhyar/projects/amplitude/src/main.cpp" "/home/local/hyarhyar/projects/amplitude/CMakeFiles/amplitude.x.dir/src/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
