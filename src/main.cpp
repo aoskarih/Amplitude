@@ -22,7 +22,13 @@ const int GRID_H = 45;
 const int GRID_BUFFER = 10;
 int GRID_C = 0;
 
-float game_time = 0.0f;
+const int max_f = 128;
+
+float game_time = 0.0f;         // time
+GLfloat active_f[max_f*3] = {};        // active functions
+
+float px, py;                   // player position
+
 
 unsigned int VBO, VAO, EBO;
 
@@ -82,6 +88,20 @@ void update() {
     fieldShader->use();
     glBindVertexArray(VAO);
     
+
+    active_f[0] = 3.0;
+    active_f[1] = game_time*0.05;
+    active_f[2] = 0.0;
+    
+    px = game_time*0.05;
+    //py = px;
+    // Set center position
+    fieldShader->setVec2("center", px, py);
+    
+    // Set active functions in shader
+    glUniform1fv(glGetUniformLocation(fieldShader->ID, "active"), 3*max_f, active_f);
+
+    // Set time in shader
     fieldShader->setFloat("time", game_time);
 
     glDrawElements(GL_TRIANGLES, GRID_C*3, GL_UNSIGNED_INT, 0);
@@ -108,10 +128,13 @@ int main() {
         for (int i = 0; i < grid_w; i++) {
             vert[(j*grid_w + i) * 3] = 2.0*(((float) GRID_W)/2.0 + 4.0 - (i + 0.5*(j%2))) / (GRID_W);
             vert[(j*grid_w + i) * 3 + 1] = 2.0*(((float) GRID_H)/2.0 + 4.5 - j) / (GRID_H);
-            vert[(j*grid_w + i) * 3 + 2] = ((float) rand()/2) / (RAND_MAX);
+            vert[(j*grid_w + i) * 3 + 2] = 0; //((float) rand()/2) / (RAND_MAX);
             // printf("%f, %f\n", vert[(j*grid_w + i) * 3], vert[(j*grid_w + i) * 3 + 1]);
         }
     }
+    
+    printf("y1: %f \n", (vert[(2*grid_w)*3 + 1]-vert[1]));
+    printf("x1: %f \n", (vert[6]-vert[0]));
 
     unsigned int indicies[(grid_w-1)*(grid_h-1)*2*3] = {};
     GRID_C = (grid_w-1)*(grid_h-1)*2;
@@ -162,6 +185,13 @@ int main() {
     te = projection * view * te;
     printf("%f %f %f\n", te.x, te.y, te.z);
 
+    px = 0.0;
+    py = 0.0;
+
+
+    active_f[3] = 0.0;
+    active_f[4] = -0.5;
+    active_f[5] = 0.5;
 
     while(!glfwWindowShouldClose(window))
     {

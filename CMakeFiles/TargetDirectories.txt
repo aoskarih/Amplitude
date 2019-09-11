@@ -1,3 +1,0 @@
-/home/local/hyarhyar/projects/amplitude/CMakeFiles/edit_cache.dir
-/home/local/hyarhyar/projects/amplitude/CMakeFiles/rebuild_cache.dir
-/home/local/hyarhyar/projects/amplitude/CMakeFiles/amplitude.x.dir
