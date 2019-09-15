@@ -1,4 +1,6 @@
 lib/libdl.so.2
 CMakeCache.txt
 CMakeFiles/*
+src/*.swp
+src/*.swo
 
