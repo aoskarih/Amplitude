@@ -25,6 +25,9 @@ int GRID_C = 0;
 const int max_f = 128;
 
 float game_time = 0.0f;         // time
+float dt = 0.0f;
+float last_frame = 0.0f;
+
 GLfloat active_f[max_f*3] = {};        // active functions
 
 float px, py;                   // player position
@@ -78,6 +81,21 @@ void processInput(GLFWwindow *window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
+
+    float speed = dt;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        py += speed;
+    } 
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        py -= speed;
+    } 
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        px += speed;
+    } 
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        px -= speed;
+    }
+
 }
 
 void update() {
@@ -93,7 +111,6 @@ void update() {
     active_f[1] = game_time*0.05;
     active_f[2] = 0.0;
     
-    px = game_time*0.05;
     //py = px;
     // Set center position
     fieldShader->setVec2("center", px, py);
@@ -195,6 +212,11 @@ int main() {
 
     while(!glfwWindowShouldClose(window))
     {
+
+        game_time = glfwGetTime();
+        dt = game_time - last_frame;
+        last_frame = game_time;
+        
         // input
         processInput(window);
 
