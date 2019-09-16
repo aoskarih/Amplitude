@@ -73,7 +73,7 @@ int init() {
     
     glViewport(0, 0, WIDTH, HEIGHT);
     
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
     return 1;
 }
@@ -134,15 +134,14 @@ void update() {
     //glDrawArrays(GL_TRIANGLES, 0, 3);
     // ---------------------------
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // Field 1 update and draw
     // ---------------------------
     field1_shader->use(); 
     
     field1_shader->setVec2("center", px, py);
 
-    //glDrawElements(GL_TRIANGLES, GRID_C*3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, GRID_C*3, GL_UNSIGNED_INT, 0);
 
     // ---------------------------
 
