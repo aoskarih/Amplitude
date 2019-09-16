@@ -12,10 +12,13 @@
 
 
 GLFWwindow* window;
-Shader * fieldShader;
+Shader * field2_shader;
+Shader * field1_shader;
 
-const unsigned int WIDTH = 1280;
-const unsigned int HEIGHT = 720;
+const unsigned int WIDTH = 1920;
+const unsigned int HEIGHT = 1080;
+
+const bool fullscreen = false;
 
 const int GRID_W = 80;
 const int GRID_H = 45;
@@ -48,7 +51,12 @@ int init() {
     //for mac
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Amplitude", NULL, NULL);
+    if (fullscreen) {
+        window = glfwCreateWindow(WIDTH, HEIGHT, "Amplitude", glfwGetPrimaryMonitor(), NULL);
+    } else {
+        window = glfwCreateWindow(WIDTH, HEIGHT, "Amplitude", NULL, NULL);
+    }
+
     if (window == NULL)
     {
 	printf("glfw window creation failed");
@@ -64,9 +72,8 @@ int init() {
     printf("glad initialized\n");
     
     glViewport(0, 0, WIDTH, HEIGHT);
-
-    // wireframe
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    
+    //glEnable(GL_DEPTH_TEST);
 
     return 1;
 }
@@ -82,47 +89,63 @@ void processInput(GLFWwindow *window) {
         glfwSetWindowShouldClose(window, true);
     }
 
-    float speed = dt;
+    float speed = dt*1000.0;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        py += speed;
+        py += speed/HEIGHT;
     } 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        py -= speed;
+        py -= speed/HEIGHT;
     } 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        px += speed;
+        px += speed/WIDTH;
     } 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        px -= speed;
+        px -= speed/WIDTH;
     }
 
 }
 
 void update() {
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    fieldShader->use();
+    
+    // Field 2 update and draw
+    // ---------------------------
+    // wireframe
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    
+    field2_shader->use();
     glBindVertexArray(VAO);
-    
 
     active_f[0] = 3.0;
-    active_f[1] = game_time*0.05;
+    active_f[1] = game_time*0.1;
     active_f[2] = 0.0;
     
-    //py = px;
     // Set center position
-    fieldShader->setVec2("center", px, py);
-    
+    field2_shader->setVec2("center", px, py);
     // Set active functions in shader
-    glUniform1fv(glGetUniformLocation(fieldShader->ID, "active"), 3*max_f, active_f);
-
+    glUniform1fv(glGetUniformLocation(field2_shader->ID, "active_f"), 3*max_f, active_f);
     // Set time in shader
-    fieldShader->setFloat("time", game_time);
-
+    field2_shader->setFloat("time", 2*game_time);
+    // Draw field 2
     glDrawElements(GL_TRIANGLES, GRID_C*3, GL_UNSIGNED_INT, 0);
     //glDrawArrays(GL_TRIANGLES, 0, 3);
+    // ---------------------------
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // Field 1 update and draw
+    // ---------------------------
+    field1_shader->use(); 
+    
+    field1_shader->setVec2("center", px, py);
+
+    //glDrawElements(GL_TRIANGLES, GRID_C*3, GL_UNSIGNED_INT, 0);
+
+    // ---------------------------
+
 
 }
 
@@ -130,7 +153,8 @@ int main() {
     
     init(); 
 
-    fieldShader = new Shader("src/shaders/field.vs", "src/shaders/field.fs");
+    field1_shader = new Shader("src/shaders/field1.vs", "src/shaders/field1.fs");
+    field2_shader = new Shader("src/shaders/field2.vs", "src/shaders/field2.fs");
     /*
     float vert [] = {
         0.0f, -0.5f, 0.5f,
@@ -145,8 +169,7 @@ int main() {
         for (int i = 0; i < grid_w; i++) {
             vert[(j*grid_w + i) * 3] = 2.0*(((float) GRID_W)/2.0 + 4.0 - (i + 0.5*(j%2))) / (GRID_W);
             vert[(j*grid_w + i) * 3 + 1] = 2.0*(((float) GRID_H)/2.0 + 4.5 - j) / (GRID_H);
-            vert[(j*grid_w + i) * 3 + 2] = 0; //((float) rand()/2) / (RAND_MAX);
-            // printf("%f, %f\n", vert[(j*grid_w + i) * 3], vert[(j*grid_w + i) * 3 + 1]);
+            vert[(j*grid_w + i) * 3 + 2] = vert[(j*grid_w + i) * 3 + 2];
         }
     }
     
@@ -182,33 +205,13 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glm::mat4 projection = glm::mat4(1.0f);
-    //projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
-    //projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-    projection = glm::rotate(projection, glm::radians(30.0f), glm::vec3(1.0, 0.0, 0.0));
-
-    glm::mat4 view = glm::mat4(1.0f);
-    /*view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
-                       glm::vec3(0.0f, 0.0f, 0.0f),
-                       glm::vec3(0.0f, 1.0f, 0.0f));
-    */
-    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
-    
-    fieldShader->setMat4("projection", projection);
-    fieldShader->setMat4("view", view);
-    
-    glm::vec4 te = glm::vec4(0.0f, 0.0f, 0.1f, 1.0f);
-    printf("%f %f %f\n", te.x, te.y, te.z);
-    te = projection * view * te;
-    printf("%f %f %f\n", te.x, te.y, te.z);
-
     px = 0.0;
     py = 0.0;
 
 
-    active_f[3] = 0.0;
-    active_f[4] = -0.5;
-    active_f[5] = 0.5;
+    active_f[3] = 4.0;
+    active_f[4] = 0.0;
+    active_f[5] = 0.0;
 
     while(!glfwWindowShouldClose(window))
     {
