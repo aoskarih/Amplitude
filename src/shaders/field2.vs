@@ -1,7 +1,8 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
 
-out vec3 color;
+out vec4 color;
+out float depth_value;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -12,8 +13,8 @@ uniform float time;
 uniform float active_f[3*128];
 
 const float color_grad[3*256] = float[](
-                0.050383, 0.029803, 0.527975,
-                0.063536, 0.028426, 0.533124,
+                0.000000, 0.000000, 0.000000,
+                0.000000, 0.000000, 0.000000,
                 0.075353, 0.027206, 0.538007,
                 0.086222, 0.026125, 0.542658,
                 0.096379, 0.025165, 0.547103,
@@ -296,15 +297,33 @@ float point(in float x, in float y) {
     }
 }
 
-vec3 get_color(float val) {
-    int ind = int(val*100);
+float arc_wave(float x, float y, float dir) {
+    float dx = aPos.x - x + center.x - mod(center.x, 0.05);
+    float dy = aPos.y - y + center.y - mod(center.y, 4.0/45.0);
+    float r = sqrt(dx*dx+dy*dy)-0.2;
+    float th = atan(dy, dx);
+    float th_max = 0.5;
+    if (abs(dir-th) > th_max) {
+        return 2*exp(-100.0*(time/10.0 - r)*(time/10.0 - r)-20*(abs(dir-th)-th_max)*(abs(dir-th)-th_max))/(0.1*(r+3)*(r+3));
+    } else {
+        return 2*exp(-100.0*(time/10.0 - r)*(time/10.0 - r))/(0.1*(r+3)*(r+3)); 
+    }
+}
+
+vec4 get_color(float val) {
+    int ind = int(val*150);
     if (ind > 255) {
         ind = 255;
     }
-    vec3 col;
+    vec4 col;
     col.x = color_grad[ind*3];
     col.y = color_grad[ind*3+1];
     col.z = color_grad[ind*3+2];
+    if (val > 1.0) {
+        col.w = 1.0;
+    } else {
+        col.w = val;
+    }
     return col;
 }
 
@@ -322,7 +341,9 @@ void main() {
             new_z = new_z + point(active_f[i+1], active_f[i+2]);
         } else if (int(active_f[i]) == 4) {
             new_z = new_z + circle_wave(active_f[i+1], active_f[i+2]);
-        }
+        } else if (int(active_f[i]) == 5) {
+            new_z = new_z + arc_wave(active_f[i+1], active_f[i+2], 0.0);
+        } 
     }
     
     if (new_z < 0.0) {
@@ -333,6 +354,8 @@ void main() {
                        aPos.y - mod(center.y, 4.0/45.0) + 0.15f*new_z, 
                        0.0f, 
                        1.0f);
+
+    depth_value = aPos.y - mod(center.y, 4.0/45.0);
     color = get_color(new_z);
 }
 

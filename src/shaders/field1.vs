@@ -11,7 +11,7 @@ void main() {
                        aPos.y - mod(center.y, 4.0/45.0), 
                        0.0f,
                        1.0f);
-    color = vec3(0.1, 0.7, 0.1);
+    color = vec3(0.0, 0.0, 0.0);
 }
 
 

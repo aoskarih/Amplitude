@@ -20,8 +20,8 @@ const unsigned int HEIGHT = 1080;
 
 const bool fullscreen = false;
 
-const int GRID_W = 80;
-const int GRID_H = 45;
+const int GRID_W = 160;
+const int GRID_H = 90;
 const int GRID_BUFFER = 10;
 int GRID_C = 0;
 
@@ -74,7 +74,9 @@ int init() {
     glViewport(0, 0, WIDTH, HEIGHT);
     
     glEnable(GL_DEPTH_TEST);
-
+  //  glEnable(GL_BLEND);
+  //  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    
     return 1;
 }
 
@@ -119,8 +121,8 @@ void update() {
     field2_shader->use();
     glBindVertexArray(VAO);
 
-    active_f[0] = 3.0;
-    active_f[1] = game_time*0.1;
+    active_f[0] = 5.0;
+    active_f[1] = 0.0;
     active_f[2] = 0.0;
     
     // Set center position
@@ -134,7 +136,7 @@ void update() {
     //glDrawArrays(GL_TRIANGLES, 0, 3);
     // ---------------------------
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // Field 1 update and draw
     // ---------------------------
     field1_shader->use(); 
@@ -208,7 +210,7 @@ int main() {
     py = 0.0;
 
 
-    active_f[3] = 4.0;
+    active_f[3] = 1.0;
     active_f[4] = 0.0;
     active_f[5] = 0.0;
 
