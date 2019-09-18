@@ -270,6 +270,18 @@ const float color_grad[3*256] = float[](
                 0.941896, 0.968590, 0.140956,
                 0.940015, 0.975158, 0.131326);
 
+float fexp(float x) {
+    float nx = 1+abs(x)/64; 
+    nx *= nx; nx *= nx; nx *= nx;
+    nx *= nx; nx *= nx; nx *= nx;
+    if (x > 0) {
+        return nx;
+    } else {
+        return 1/nx;
+    }
+}
+
+
 float wave(in float x, in float y) {
     float dx = aPos.x - x + center.x - mod(center.x, 0.05);
     float dy = aPos.y - y + center.y - mod(center.y, 4.0/45.0);
@@ -282,7 +294,7 @@ float circle_wave(in float x, in float y) {
     float dx = aPos.x - x + center.x - mod(center.x, 0.05);
     float dy = aPos.y - y + center.y - mod(center.y, 4.0/45.0);
     float r = sqrt(dx*dx+dy*dy);
-    return 2*exp(-100.0*(time/10.0 - r)*(time/10.0 - r))/((r+1)*(r+1));
+    return 2*fexp(-100.0*(time/10.0 - r)*(time/10.0 - r))/((r+1)*(r+1));
 } 
 
 float point(in float x, in float y) {
@@ -304,9 +316,9 @@ float arc_wave(float x, float y, float dir) {
     float th = atan(dy, dx);
     float th_max = 0.5;
     if (abs(dir-th) > th_max) {
-        return 2*exp(-100.0*(time/10.0 - r)*(time/10.0 - r)-20*(abs(dir-th)-th_max)*(abs(dir-th)-th_max))/(0.1*(r+3)*(r+3));
+        return 2*fexp(-100.0*(time/10.0 - r)*(time/10.0 - r)-20*(abs(dir-th)-th_max)*(abs(dir-th)-th_max))/(0.1*(r+3)*(r+3));
     } else {
-        return 2*exp(-100.0*(time/10.0 - r)*(time/10.0 - r))/(0.1*(r+3)*(r+3)); 
+        return 2*fexp(-100.0*(time/10.0 - r)*(time/10.0 - r))/(0.1*(r+3)*(r+3)); 
     }
 }
 
