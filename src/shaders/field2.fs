@@ -6,6 +6,6 @@ in vec4 color;
 in float depth_value;
 
 void main() {
-    FragColor = vec4(color.x, color.y, color.z, 0.2);
+    FragColor = vec4(color.x, color.y, color.z, 1.0);
 }
 

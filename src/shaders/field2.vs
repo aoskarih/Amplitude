@@ -13,8 +13,8 @@ uniform float time;
 uniform float active_f[3*128];
 
 const float color_grad[3*256] = float[](
-                0.000000, 0.000000, 0.000000,
-                0.000000, 0.000000, 0.000000,
+                0.050383, 0.029803, 0.527975,
+                0.063536, 0.028426, 0.533124,
                 0.075353, 0.027206, 0.538007,
                 0.086222, 0.026125, 0.542658,
                 0.096379, 0.025165, 0.547103,
@@ -281,6 +281,9 @@ float fexp(float x) {
     }
 }
 
+float rand(vec2 co) {
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 float wave(in float x, in float y) {
     float dx = aPos.x - x + center.x - mod(center.x, 0.05);
@@ -361,9 +364,14 @@ void main() {
     if (new_z < 0.0) {
         new_z = 0;
     }
+    
+    float new_x = aPos.x - mod(center.x, 0.05);
+    float new_y = aPos.y - mod(center.y, 4.0/45.0);
 
-    gl_Position = vec4(aPos.x - mod(center.x, 0.05), 
-                       aPos.y - mod(center.y, 4.0/45.0) + 0.15f*new_z, 
+    //new_z += rand(vec2(time+new_x, time+new_y))/2.0;
+
+    gl_Position = vec4(new_x, 
+                       new_y + 0.15f*new_z, 
                        0.0f, 
                        1.0f);
 

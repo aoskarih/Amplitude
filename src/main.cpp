@@ -21,7 +21,7 @@ const unsigned int HEIGHT = 1080;
 const bool fullscreen = false;
 
 const int GRID_W = 160;
-const int GRID_H = 90;
+const int GRID_H = 80;
 const int GRID_BUFFER = 10;
 int GRID_C = 0;
 
@@ -72,6 +72,9 @@ int init() {
     printf("glad initialized\n");
     
     glViewport(0, 0, WIDTH, HEIGHT);
+  
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(2.0);
     
     glEnable(GL_DEPTH_TEST);
   //  glEnable(GL_BLEND);
